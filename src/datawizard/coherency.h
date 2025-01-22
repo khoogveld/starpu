@@ -305,11 +305,21 @@ struct _starpu_data_state
 	/** During reduction we need some specific methods: redux_func performs
 	 * the reduction of an interface into another one (eg. "+="), and init_func
 	 * initializes the data interface to a default value that is stable by
-	 * reduction (eg. 0 for +=). */
+	 * reduction (eg. 0 for +=).
+	 * 
+	 * Arguments can be provided by value to these methods, respectively,
+	 * through redux_cl_arg and init_cl_arg.
+	 * 
+	 * Temporary data in the form of STARPU_SCRATCH can be given 
+	 * for more flexibility in the reduction operation performed.	 * 
+	 **/
 	struct starpu_codelet *redux_cl;
 	struct starpu_codelet *init_cl;
+
 	void *redux_cl_arg;
 	void *init_cl_arg;
+
+	starpu_data_handle_t redux_scratch;
 
 	/** Are we currently performing a reduction on that handle ? If so the
 	 * reduction_refcnt should be non null until there are pending tasks

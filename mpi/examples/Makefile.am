@@ -292,22 +292,26 @@ endif
 # MPI STARPU_MPI_REDUX #
 ########################
 
-examplebin_PROGRAMS +=				\
-	mpi_redux/mpi_redux     		\
-	mpi_redux/mpi_redux_autowrapup  	\
-	mpi_redux/mpi_redux_tree
+examplebin_PROGRAMS += \
+	mpi_redux/mpi_redux \
+	mpi_redux/mpi_redux_autowrapup \
+	mpi_redux/mpi_redux_tree \
+	mpi_redux/mpi_redux_with_scratch
 
-mpi_redux_mpi_redux_LDADD =			\
+mpi_redux_mpi_redux_LDADD =	\
 	-lm
-mpi_redux_mpi_redux_autowrapup_LDADD =			\
+mpi_redux_mpi_redux_autowrapup_LDADD = \
 	-lm
-mpi_redux_mpi_redux_tree_LDADD =		\
+mpi_redux_mpi_redux_tree_LDADD = \
+	-lm
+mpi_redux_mpi_redux_with_scratch_LDADD = \
 	-lm
 if !STARPU_SIMGRID
-starpu_mpi_EXAMPLES +=				\
-	mpi_redux/mpi_redux                     \
-	mpi_redux/mpi_redux_autowrapup  	\
-	mpi_redux/mpi_redux_tree
+starpu_mpi_EXAMPLES += \
+	mpi_redux/mpi_redux \
+	mpi_redux/mpi_redux_autowrapup \
+	mpi_redux/mpi_redux_tree \
+	mpi_redux/mpi_redux_with_scratch
 endif
 
 ##########################################

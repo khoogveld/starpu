@@ -667,6 +667,13 @@ void starpu_data_query_status(starpu_data_handle_t handle, int memory_node, int 
 struct starpu_codelet;
 
 /**
+ * Set STARPU_SCRATCH data handle to provide access to a temporary memory
+ * within the reduction codelets.
+ **/
+
+void starpu_data_set_reduction_scratch(starpu_data_handle_t handle, starpu_data_handle_t redux_scratch_handle);
+
+/**
    Set the codelets to be used for \p handle when it is accessed in the
    mode ::STARPU_REDUX. Per-worker buffers will be initialized with
    the codelet \p init_cl (which has to take one handle with ::STARPU_W), and

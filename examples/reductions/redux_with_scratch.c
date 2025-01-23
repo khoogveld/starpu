@@ -216,6 +216,7 @@ int main(int argc, char *argv[])
 		starpu_data_unregister(v_h[i_block]);
 	}
 	starpu_data_unregister(u_h);
+	starpu_data_unregister(red_scratch_h);
 
 	// Free
 	int check = u[0];

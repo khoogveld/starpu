@@ -159,7 +159,8 @@ noinst_HEADERS = 				\
 	pi/SobolQRNG/sobol_primitives.h         \
 	reductions/dot_product.h                \
 	basic_examples/vector_scal_cpu_template.h \
-	sched_ctx/axpy_partition_gpu.h
+	sched_ctx/axpy_partition_gpu.h \
+	reductions/redux_with_scratch.c
 
 #####################################
 # What to install and what to check #
@@ -301,7 +302,8 @@ STARPU_EXAMPLES +=				\
 	dependency/sequential_consistency	\
 	subgraphs/manual			\
 	subgraphs/partition			\
-	subgraphs/plan
+	subgraphs/plan \
+	reductions/redux_with_scratch
 endif
 
 if !STARPU_SIMGRID
@@ -1497,6 +1499,8 @@ if STARPU_USE_OPENCL
 nobase_STARPU_OPENCL_DATA_DATA += \
 	reductions/dot_product_opencl_kernels.cl
 endif
+reductions_redux_with_scratch_SOURCES = \
+	reductions/redux_with_scratch.c
 
 ##################
 # Mandelbrot Set #

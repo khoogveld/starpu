@@ -363,6 +363,12 @@ void _starpu_data_end_reduction_mode(starpu_data_handle_t handle, int priority)
 					STARPU_TASK_SET_HANDLE(redux_task, replicate_array[i], 0);
 					STARPU_TASK_SET_HANDLE(redux_task, replicate_array[i+step], 1);
 
+					// Set STARPU_SCRATCH if present
+					if (handle->redux_scratch) {
+						STARPU_TASK_SET_HANDLE(redux_task, handle->redux_scratch, 2);
+						STARPU_CODELET_SET_MODE(redux_task->cl, STARPU_SCRATCH, 2);
+					}
+
 					int ndeps = 0;
 					struct starpu_task *task_deps[2];
 

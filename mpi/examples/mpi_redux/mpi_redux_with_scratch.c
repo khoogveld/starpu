@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 		starpu_vector_data_register(&v_h, -1, 0, NX, sizeof(int));
 	}
 
-	// Init accumulation Data
+	// Init accumulation data
 	int **w = malloc(n_rank * sizeof(int *));
 	for (int j_rank = 0; j_rank < n_rank; j_rank++) {
 		if (j_rank == i_rank) {
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
 		w[i_rank][i] = i_rank;
 	}
 
-	// Register accumulation Data
+	// Register accumulation data
 	starpu_data_handle_t w_h[n_rank];
 	for (int j_rank = 0; j_rank < n_rank; j_rank++) {
 		if (j_rank == i_rank) {

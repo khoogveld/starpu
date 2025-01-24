@@ -1145,7 +1145,7 @@ int starpu_mpi_redux_data_prio_tree(MPI_Comm comm, starpu_data_handle_t data_han
 							return ret;
 
 					    /* Task B */
-					    if ((data_handle->redux_cl)->nbuffers == 3) {
+					    if ((data_handle->redux_cl)->nbuffers == 3 && (data_handle->redux_cl)->modes[2] == STARPU_SCRATCH) {
 					    	ret = starpu_task_insert(data_handle->redux_cl,
 						                         STARPU_RW|STARPU_COMMUTE, data_handle,
 									 			 STARPU_R, new_handle,

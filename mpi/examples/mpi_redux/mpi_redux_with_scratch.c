@@ -34,6 +34,18 @@
 
 #define NX 32
 
+// Util
+
+static int max_array(int *array, int n)
+{
+	int max = -1;
+	for (int i = 0; i < n; i++) {
+		if (max < array[i]) max = array[i];
+	}
+
+	return max;
+}
+
 // Codelets
 
 static void cl_cpu_work(void *handles[], void*arg)
@@ -47,9 +59,9 @@ static void cl_cpu_work(void *handles[], void*arg)
 	int *w  = (int *) STARPU_VECTOR_GET_PTR(handles[1]);
 
 	// Accumulate
-	for (int i = 0; i < nx; i++) {
-		v[i] += w[i];
-	}
+	int max_v = max_array(v, nx);
+	int max_w = max_array(w, nx);
+	if (max_w > max_v) memcpy(v, w, nx*sizeof(int));
 }
 
 static struct starpu_codelet work_cl =
@@ -71,21 +83,17 @@ static void cl_cpu_print(void *handles[], void*arg)
 
 	// Check
 	int n_rank = starpu_mpi_world_size();
-	int count  = 0;
-	for (int j_rank = 0; j_rank < n_rank; j_rank++) {
-		count += j_rank;
-	}
-	int check = 0;
-	for (int i = 0; i < nx; i++) {
-		if (v[i] != count) {
-			check = 1;
-			break;
-		}
-	}
+	int check = EXIT_SUCCESS; 
+    for (int i = 0; i < NX; i++) {
+    	if (v[i] != (n_rank-1)) check = EXIT_FAILURE;
+    }
 
-	// Show
-	printf("Result status : %d\n", check);
-	fflush(stdout);
+    // Output
+    v[0] = check;
+
+    // Print
+    printf("Return %d\n", check);
+    fflush(stdout);
 }
 
 static struct starpu_codelet print_cl =
@@ -138,8 +146,11 @@ static void cl_cpu_task_red(void *handles[], void*arg)
 	memcpy(s+nx, w, nx*sizeof(int));
 
 	// Accumulate
-	for (int i = 0; i < ny; i++) {
-		v[i%nx] = (i < nx) ? s[i] : v[i%nx] + s[i];
+	memcpy(s,    v, nx*sizeof(int));
+	memcpy(s+nx, w, nx*sizeof(int));
+	int max_s = max_array(s, ny);
+	for (int i = 0; i < nx; i++) {
+		v[i] = max_s;
 	}
 }
 
@@ -159,6 +170,15 @@ int main(int argc, char *argv[])
 	starpu_fxt_autostart_profiling(0);
 	int ret = starpu_mpi_init_conf(&argc, &argv, 1, MPI_COMM_WORLD, NULL);
 	STARPU_CHECK_RETURN_VALUE(ret, "starpu_mpi_ini_conft");
+
+	// Workers
+	int nworkers = starpu_cpu_worker_get_count();
+	if (nworkers > 1)
+	{
+		FPRINTF(stderr, "We need only one worker.\n");
+		starpu_mpi_shutdown();
+		return STARPU_TEST_SKIPPED;
+	}
 
 	// MPI Parameters
 	int n_rank = 0;
@@ -258,11 +278,12 @@ int main(int argc, char *argv[])
 	}
 
 	// Free
+	int check = v[0];
 	free(w[i_rank]);
 	free(w);
 
 	// MPI Finalize
 	starpu_mpi_shutdown();
 
-	return 0;
+	return check;
 }

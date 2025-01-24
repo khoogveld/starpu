@@ -60,9 +60,11 @@ static void cl_cpu_print(void *handles[], void*arg)
     }
 
     // Output
-    for (int i = 0; i < NX; i++) {
-    	u[i] = check;
-    }
+    u[0] = check;
+
+    // Print
+    printf("Return %d\n", check);
+    fflush(stdout);
 }
 
 static struct starpu_codelet print_cl =
